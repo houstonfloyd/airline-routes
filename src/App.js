@@ -8,6 +8,21 @@ import Table from './components/Table.js';
 
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { airline: 'All Airlines' };
+  };
+
+  select = (e) => {
+    const airline = e.target.value;
+    this.setState({ airline: airline });
+  };
+
+  formatValue = (property, value) => {
+
+  };
+
   render() {
 
     const columns = [
@@ -16,17 +31,23 @@ class App extends Component {
       {name: 'Destination Airport', property: 'dest'},
     ];
 
-    const rows = data.routes.map((route) => {
+    let rows = data.routes.map((route) => {
       let airline = getAirlineById(route.airline);
       let src = getAirportByCode(route.src);
       let dest = getAirportByCode(route.dest);
       
       return [airline, src, dest];
-    });    
+    });
 
-    const formatValue = (property, value) => {
-
+    if (this.state.airline !== 'All Airlines') {
+      rows = rows.filter(row => row[0] === this.state.airline);
     }
+
+    const options = data.airlines.map((airline) => {
+      return (
+        <option onClick={this.select}>{airline.name}</option>
+      );
+    });
 
     return (
       <div className="app">
@@ -34,7 +55,11 @@ class App extends Component {
           <h1 className="title">Airline Routes</h1>
         </header>
         <section>
-          <Table 
+          <select onChange={this.select}>
+            <option>All Airlines</option>
+            { options }
+          </select>
+          <Table
             className="routes-table"
             columns={columns} 
             rows={rows}
@@ -45,7 +70,7 @@ class App extends Component {
         </section>
       </div>
     );
-  }
-}
+  };
+};
 
 export default App;
