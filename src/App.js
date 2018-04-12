@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import data from './data.js';
+import { getAirlineById, getAirportByCode } from './data.js';
 
 //table - map over data, return row(obj is prop)
   //row - return 3 * td, [0], [1], [2]
@@ -50,9 +51,9 @@ class TableRow extends Component {
   render() {
     return (
       <tr>
-        <td>{this.props.airline}</td>
-        <td>{this.props.src}</td>
-        <td>{this.props.dest}</td>
+        <td>{getAirlineById(this.props.airline)}</td>
+        <td>{getAirportByCode(this.props.src)}</td>
+        <td>{getAirportByCode(this.props.dest)}</td>
       </tr>      
     );
   }
