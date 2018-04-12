@@ -1,14 +1,33 @@
 import React, { Component } from 'react';
 import './App.css';
+
 import data from './data.js';
 import { getAirlineById, getAirportByCode } from './data.js';
 
-//table - map over data, return row(obj is prop)
-  //row - return 3 * td, [0], [1], [2]
+import Table from './components/Table.js';
 
 
 class App extends Component {
   render() {
+
+    const columns = [
+      {name: 'Airline', property: 'airline'},
+      {name: 'Source Airport', property: 'src'},
+      {name: 'Destination Airport', property: 'dest'},
+    ];
+
+    const rows = data.routes.map((route) => {
+      let airline = getAirlineById(route.airline);
+      let src = getAirportByCode(route.src);
+      let dest = getAirportByCode(route.dest);
+      
+      return [airline, src, dest];
+    });    
+
+    const formatValue = (property, value) => {
+
+    }
+
     return (
       <div className="app">
         <header className="header">
@@ -17,44 +36,13 @@ class App extends Component {
         <section>
           <p></p>
         </section>
-        <DataTable />
+        <Table 
+          className="routes-table"
+          columns={columns} 
+          rows={rows}
+          format={this.formatValue}
+           />
       </div>
-    );
-  }
-}
-
-class DataTable extends Component {
-  render() {
-    const rows = data.routes.map((route) => {
-      let { airline, src, dest } = route;
-      return <TableRow airline={airline} src={src} dest={dest} />;
-    });
-
-    return (
-      <table>
-        <thead>
-          <tr>
-            <th>Airline</th>
-            <th>Source Airport</th>
-            <th>Destination Airport</th>
-          </tr>
-        </thead>
-        <tbody>
-          { rows }
-        </tbody>
-      </table>
-    );
-  }
-}
-
-class TableRow extends Component {
-  render() {
-    return (
-      <tr>
-        <td>{getAirlineById(this.props.airline)}</td>
-        <td>{getAirportByCode(this.props.src)}</td>
-        <td>{getAirportByCode(this.props.dest)}</td>
-      </tr>      
     );
   }
 }
