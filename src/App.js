@@ -34,14 +34,15 @@ class App extends Component {
           <h1 className="title">Airline Routes</h1>
         </header>
         <section>
-          <p></p>
-        </section>
-        <Table 
-          className="routes-table"
-          columns={columns} 
-          rows={rows}
-          format={this.formatValue}
+          <Table 
+            className="routes-table"
+            columns={columns} 
+            rows={rows}
+            format={this.formatValue}
+            initialStart={0}
+            perPage={25}
            />
+        </section>
       </div>
     );
   }
