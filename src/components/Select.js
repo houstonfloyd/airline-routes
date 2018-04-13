@@ -10,7 +10,7 @@ class Select extends Component {
   render() {
     const options = this.props.options.map((option) => {
       return (
-        <option>{option.name}</option>
+        <option disabled={!option.active}>{option.name}</option>
       );
     });
 

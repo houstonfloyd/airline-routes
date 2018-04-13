@@ -25,14 +25,18 @@ class App extends Component {
     this.setState({ airport });
   };
 
+  clearFilters = () => {
+    this.setState({
+      airline: 'All Airlines',
+      airport: 'All Airports',
+    });
+  };
+
   formatValue = (property, value) => {
 
   };
 
   render() {
-
-    const filteredAirlines = data.airlines;
-    const filteredAirports = data.airports;
 
     const columns = [
       {name: 'Airline', property: 'airline'},
@@ -40,23 +44,30 @@ class App extends Component {
       {name: 'Destination Airport', property: 'dest'},
     ];
 
-    let rows = data.routes.map((route) => {
+    let filteredRoutes = data.routes.filter(route => {
+      return (getAirlineById(route.airline) === this.state.airline || this.state.airline === 'All Airlines') && 
+             (getAirportByCode(route.src) === this.state.airport || getAirportByCode(route.dest) === this.state.airport || this.state.airport === 'All Airports');
+    });
+
+    const filteredAirlines = data.airlines.map(airline => {
+      const active = !!filteredRoutes.find(route => route.airline === airline.id);
+      return Object.assign({}, airline, {active});
+    });
+
+    const filteredAirports = data.airports.map(airport => {
+      const active = !!filteredRoutes.find(route => {
+        return (route.src === airport.code) || (route.dest === airport.code);
+      });
+      return Object.assign({}, airport, {active});
+    });
+
+    filteredRoutes = filteredRoutes.map((route) => {
       let airline = getAirlineById(route.airline);
       let src = getAirportByCode(route.src);
       let dest = getAirportByCode(route.dest);
       
       return [airline, src, dest];
     });
-
-    if (this.state.airline !== 'All Airlines') {
-      rows = rows.filter(row => row[0] === this.state.airline);
-    }
-
-    if (this.state.airport !== 'All Airports') {
-      rows = rows.filter(row => {
-        return (row[1] === this.state.airport) || (row[2] === this.state.aiport);
-      });
-    }
 
     return (
       <div className="app">
@@ -80,10 +91,11 @@ class App extends Component {
             value={this.state.airport}
             onSelect={this.selectAirport}
           />
+          <button onClick={this.clearFilters}>Clear Filters</button>
           <Table
             className="routes-table"
             columns={columns} 
-            rows={rows}
+            rows={filteredRoutes}
             format={this.formatValue}
             initialStart={0}
             perPage={25}
