@@ -5,18 +5,24 @@ import data from './data.js';
 import { getAirlineById, getAirportByCode } from './data.js';
 
 import Table from './components/Table.js';
-
+import Select from './components/Select.js';
 
 class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { airline: 'All Airlines' };
+    this.state = { 
+      airline: 'All Airlines',
+      airport: 'All Airports',
+    };
   };
 
-  select = (e) => {
-    const airline = e.target.value;
-    this.setState({ airline: airline });
+  selectAirline = (airline) => {
+    this.setState({ airline });
+  };
+
+  selectAirport = (airport) => {
+    this.setState({ airport });
   };
 
   formatValue = (property, value) => {
@@ -24,6 +30,9 @@ class App extends Component {
   };
 
   render() {
+
+    const filteredAirlines = data.airlines;
+    const filteredAirports = data.airports;
 
     const columns = [
       {name: 'Airline', property: 'airline'},
@@ -43,11 +52,11 @@ class App extends Component {
       rows = rows.filter(row => row[0] === this.state.airline);
     }
 
-    const options = data.airlines.map((airline) => {
-      return (
-        <option onClick={this.select}>{airline.name}</option>
-      );
-    });
+    if (this.state.airport !== 'All Airports') {
+      rows = rows.filter(row => {
+        return (row[1] === this.state.airport) || (row[2] === this.state.aiport);
+      });
+    }
 
     return (
       <div className="app">
@@ -55,10 +64,22 @@ class App extends Component {
           <h1 className="title">Airline Routes</h1>
         </header>
         <section>
-          <select onChange={this.select}>
-            <option>All Airlines</option>
-            { options }
-          </select>
+          <Select 
+            options={filteredAirlines} 
+            valueKey="id" 
+            titleKey="name"
+            allTitle="All Airlines" 
+            value={this.state.airline} 
+            onSelect={this.selectAirline}
+          />
+          <Select 
+            options={filteredAirports}
+            valueKey="id" 
+            titleKey="name"
+            allTitle="All Airports" 
+            value={this.state.airport}
+            onSelect={this.selectAirport}
+          />
           <Table
             className="routes-table"
             columns={columns} 
