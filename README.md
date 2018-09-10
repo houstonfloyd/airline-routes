@@ -1,4 +1,4 @@
-== Airline Routes
+# Airline Routes
 
 Airline routes visualization built with React.js
 
